@@ -12,7 +12,7 @@
     RootModule        = 'QuickIP.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.0'
+    ModuleVersion     = '1.0.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@
     Copyright         = '(c) SeryiBaran. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description       = 'Tiny module for quick IP setting/resetting'
+    Description       = 'Tiny PowerShell module for quick IP setting/resetting'
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion = '5.1'
@@ -51,7 +51,10 @@
     # ProcessorArchitecture = ''
 
     # Modules that must be imported into the global environment prior to importing this module
-    RequiredModules   = @('Pansies')
+    RequiredModules   = @(@{
+            ModuleName    = "Pansies"; 
+            ModuleVersion = "2.6.0"; 
+        })
 
     # Assemblies that must be loaded prior to importing this module
     # RequiredAssemblies = @()
@@ -101,7 +104,7 @@
             # LicenseUri = ''
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/SeryiBaran/QuickIP-PS'
 
             # A URL to an icon representing this module.
             # IconUri = ''
