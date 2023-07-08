@@ -35,7 +35,14 @@ function Set-QuickIP {
     PrefixLength   = 24
   }
 
-  New-NetIPAddress @ipParams | Out-Null
+  try {
+    New-NetIPAddress @ipParams -ErrorAction Stop | Out-Null
+  }
+  catch {
+    Write-Error "🚨 Oh, error occurred:"
+    Write-Error $_
+    break
+  }
 
   Write-Host "✨ Succesfully configured!" -ForegroundColor green
 }
@@ -62,9 +69,16 @@ function Reset-QuickIP {
 
   $IPAddress = (Get-NetIPAddress -InterfaceAlias $Interface -AddressFamily IPv4).IPAddress
 
-  Remove-NetIPAddress -IPAddress $IPAddress -Confirm:$false | Out-Null
-  Set-NetIPInterface -InterfaceAlias $Interface -Dhcp Enabled | Out-Null
-  Restart-NetAdapter -InterfaceAlias $Interface | Out-Null
+  try {
+    Remove-NetIPAddress -IPAddress $IPAddress -Confirm:$false -ErrorAction Stop | Out-Null
+    Set-NetIPInterface -InterfaceAlias $Interface -Dhcp Enabled -ErrorAction Stop | Out-Null
+    Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
+  }
+  catch {
+    Write-Error "🚨 Oh, error occurred:"
+    Write-Error $_
+    break
+  }
   
   Write-Host "✨ Succesfully resetted!" -ForegroundColor green
 }
