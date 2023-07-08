@@ -37,7 +37,7 @@ function Set-QuickIP {
 
   New-NetIPAddress @ipParams | Out-Null
 
-  Write-Host "Succesfully configured!" -ForegroundColor green
+  Write-Host "✨ Succesfully configured!" -ForegroundColor green
 }
 
 <#
@@ -66,5 +66,5 @@ function Reset-QuickIP {
   Set-NetIPInterface -InterfaceAlias $Interface -Dhcp Enabled | Out-Null
   Restart-NetAdapter -InterfaceAlias $Interface | Out-Null
   
-  Write-Host "Succesfully resetted!" -ForegroundColor green
+  Write-Host "✨ Succesfully resetted!" -ForegroundColor green
 }
