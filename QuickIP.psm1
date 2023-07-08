@@ -1,5 +1,3 @@
-Import-Module Pansies
-
 <#
  .Synopsis
   Sets a static IP address for interface.
