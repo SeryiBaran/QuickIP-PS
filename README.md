@@ -12,6 +12,12 @@ Install-Module QuickIP
 
 ## Usage
 
+> Don't forget to import module =)
+>
+> ```powershell
+> Import-Module QuickIP
+> ```
+
 ### `Set-QuickIP`
 
 ```
@@ -32,8 +38,7 @@ DESCRIPTION
 PARAMETERS
     -Interface <String>
         Net interface name.
-        Get it by `Get-NetIPAddress -AddressFamily IPv4 | Select-Object -Property Interface
-        Alias,IPAddress`.
+        Get it by `Get-NetIPAddress -AddressFamily IPv4 | Select-Object -Property InterfaceAlias,IPAddress`.
 
         Required?                    true
         Position?                    1
@@ -94,8 +99,7 @@ DESCRIPTION
 PARAMETERS
     -Interface <String>
         Net interface name.
-        Get it by `Get-NetIPAddress -AddressFamily IPv4 | Select-Object -Property Interface
-        Alias,IPAddress`.
+        Get it by `Get-NetIPAddress -AddressFamily IPv4 | Select-Object -Property InterfaceAlias,IPAddress`.
 
         Required?                    true
         Position?                    1

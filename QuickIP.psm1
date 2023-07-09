@@ -37,12 +37,12 @@ function Set-QuickIP {
     New-NetIPAddress @ipParams -ErrorAction Stop | Out-Null
   }
   catch {
-    Write-Error "🚨 Oh, error occurred:"
+    Write-Error "Oh, error occurred:"
     Write-Error $_
     break
   }
 
-  Write-Host "✨ Succesfully configured!" -ForegroundColor green
+  Write-Host "Succesfully configured!" -ForegroundColor green
 }
 
 <#
@@ -73,10 +73,10 @@ function Reset-QuickIP {
     Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
   }
   catch {
-    Write-Error "🚨 Oh, error occurred:"
+    Write-Error "Oh, error occurred:"
     Write-Error $_
     break
   }
   
-  Write-Host "✨ Succesfully resetted!" -ForegroundColor green
+  Write-Host "Succesfully resetted!" -ForegroundColor green
 }
