@@ -7,7 +7,7 @@ Tiny Powershell module for quick IP setting/resetting.
 ## Installing
 
 ```powershell
-Install-Module QuickIP
+Install-Module QuickIP -Scope CurrentUser -AllowClobber
 ```
 
 ## Usage
