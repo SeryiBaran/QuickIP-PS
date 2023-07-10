@@ -94,7 +94,7 @@ function Reset-QuickIP {
     Remove-NetIPAddress -IPAddress $IPAddress -Confirm:$false -ErrorAction Stop | Out-Null
     Set-NetIPInterface -InterfaceAlias $Interface -Dhcp Enabled -ErrorAction Stop | Out-Null
     if ($CurrentGateway) {
-      Remove-NetRoute -InterfaceAlias $Interface -NextHop $() -Confirm:$false -ErrorAction Stop | Out-Null
+      Remove-NetRoute -InterfaceAlias $Interface -NextHop $CurrentGateway -Confirm:$false -ErrorAction Stop | Out-Null
     }
     Set-DnsClientServerAddress -InterfaceAlias $Interface -ResetServerAddresses -ErrorAction Stop | Out-Null
     Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
