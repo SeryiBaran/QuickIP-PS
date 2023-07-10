@@ -10,7 +10,7 @@
   New IP address.
 
  .Parameter DontConfigDNS
-  If set, dont use current gateway and DNS in new settings.
+  If set, dont use current DNS in new settings.
   Useful if your goal is connecting 2 PCs with a wire to create a dumb LAN without access to Internet.
   Dont use if your goal is set static IP without loss access to Internet.
 
@@ -89,9 +89,13 @@ function Reset-QuickIP {
 
   try {
     $IPAddress = (Get-NetIPAddress -InterfaceAlias $Interface -AddressFamily IPv4).IPAddress
+    $CurrentGateway = (Get-NetIPConfiguration -InterfaceAlias Ethernet).IPv4DefaultGateway.NextHop
 
     Remove-NetIPAddress -IPAddress $IPAddress -Confirm:$false -ErrorAction Stop | Out-Null
     Set-NetIPInterface -InterfaceAlias $Interface -Dhcp Enabled -ErrorAction Stop | Out-Null
+    if ($CurrentGateway) {
+      Remove-NetRoute -InterfaceAlias $Interface -NextHop $() -Confirm:$false -ErrorAction Stop | Out-Null
+    }
     Set-DnsClientServerAddress -InterfaceAlias $Interface -ResetServerAddresses -ErrorAction Stop | Out-Null
     Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
   }
