@@ -29,7 +29,7 @@ SYNOPSIS
 
 
 SYNTAX
-    Set-QuickIP [-Interface] <String> [-IPAddress] <IPAddress> [<CommonParameters>]
+    Set-QuickIP [-Interface] <String> [-IPAddress] <IPAddress> [-DontConfigDNS] [<CommonParameters>]
 
 
 DESCRIPTION
@@ -47,11 +47,22 @@ PARAMETERS
         Accept wildcard characters?  false
 
     -IPAddress <IPAddress>
-        IP address.
+        New IP address.
 
         Required?                    true
         Position?                    2
         Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?  false
+
+    -DontConfigDNS [<SwitchParameter>]
+        If set, dont use current DNS in new settings.
+        Useful if your goal is connecting 2 PCs with a wire to create a dumb LAN without access to Internet.
+        Dont use if your goal is set static IP without loss access to Internet.
+
+        Required?                    false
+        Position?                    named
+        Default value                False
         Accept pipeline input?       false
         Accept wildcard characters?  false
 
@@ -67,7 +78,18 @@ OUTPUTS
 
     -------------------------- EXAMPLE 1 --------------------------
 
-    PS > Set-QuickIP -i "Ethernet" -ip 192.168.0.32
+    PS > # Sets IP and save previous DNS settings
+    Set-QuickIP -i "Ethernet" -ip 192.168.0.32
+
+
+
+
+
+
+    -------------------------- EXAMPLE 2 --------------------------
+
+    PS > # Sets IP and disable DNS config
+    Set-QuickIP -i "Ethernet" -ip 192.168.0.32 -DontConfigDNS
 
 
 
@@ -86,7 +108,7 @@ NAME
     Reset-QuickIP
 
 SYNOPSIS
-    Resets IP of interface to DHCP.
+    Resets settings of interface to default (DHCP + automatic DNS configuration).
 
 
 SYNTAX
