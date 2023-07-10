@@ -7,10 +7,20 @@
   Get it by `Get-NetIPAddress -AddressFamily IPv4 | Select-Object -Property InterfaceAlias,IPAddress`.
 
  .Parameter IPAddress
-  IP address.
+  New IP address.
+
+ .Parameter DontConfigDNS
+  If set, dont use current gateway and DNS in new settings.
+  Useful if your goal is connecting 2 PCs with a wire to create a dumb LAN without access to Internet.
+  Dont use if your goal is set static IP without loss access to Internet.
 
  .Example
+  # Sets IP and save previous DNS settings
   Set-QuickIP -i "Ethernet" -ip 192.168.0.32
+
+ .Example
+  # Sets IP and disable DNS config
+  Set-QuickIP -i "Ethernet" -ip 192.168.0.32 -DontConfigDNS
 #>
 function Set-QuickIP {
   [CmdletBinding()]
@@ -23,7 +33,11 @@ function Set-QuickIP {
     [parameter(Mandatory = $true)]
     [alias("ip")]
     [ipaddress]
-    $IPAddress
+    $IPAddress,
+
+    [switch]
+    [alias("NoDns")]
+    $DontConfigDNS = $False
   )
 
   try {
@@ -32,13 +46,16 @@ function Set-QuickIP {
       AddressFamily  = "IPv4"
       IPAddress      = $IPAddress
       PrefixLength   = 24
-      DefaultGateway = (Get-NetIPConfiguration -InterfaceAlias Ethernet).IPv4DefaultGateway.NextHop
+    }
+    if (-not $DontConfigDNS) {
+      $CurrentDNSServers = ((Get-NetIPConfiguration -InterfaceAlias Ethernet).DNSServer | Where-Object { $_.AddressFamily -eq 2 }).ServerAddresses
+      $ipParams.DefaultGateway = (Get-NetIPConfiguration -InterfaceAlias Ethernet).IPv4DefaultGateway.NextHop
     }
 
-    $CurrentDNSServers = ((Get-NetIPConfiguration -InterfaceAlias Ethernet).DNSServer | Where-Object { $_.AddressFamily -eq 2 }).ServerAddresses
-
     New-NetIPAddress @ipParams -ErrorAction Stop | Out-Null
-    Set-DnsClientServerAddress -InterfaceAlias $Interface -ServerAddresses $CurrentDNSServers -ErrorAction Stop | Out-Null
+    if (-not $DontConfigDNS) {
+      Set-DnsClientServerAddress -InterfaceAlias $Interface -ServerAddresses $CurrentDNSServers -ErrorAction Stop | Out-Null
+    }
     Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
   }
   catch {
@@ -52,7 +69,7 @@ function Set-QuickIP {
 
 <#
  .Synopsis
-  Resets IP of interface to DHCP.
+  Resets settings of interface to default (DHCP + automatic DNS configuration).
 
  .Parameter Interface
   Net interface name.
