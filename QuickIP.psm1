@@ -26,15 +26,20 @@ function Set-QuickIP {
     $IPAddress
   )
 
-  $ipParams = @{
-    InterfaceAlias = $Interface
-    AddressFamily  = "IPv4"
-    IPAddress      = $IPAddress
-    PrefixLength   = 24
-  }
-
   try {
+    $ipParams = @{
+      InterfaceAlias = $Interface
+      AddressFamily  = "IPv4"
+      IPAddress      = $IPAddress
+      PrefixLength   = 24
+      DefaultGateway = (Get-NetIPConfiguration -InterfaceAlias Ethernet).IPv4DefaultGateway.NextHop
+    }
+
+    $CurrentDNSServers = ((Get-NetIPConfiguration -InterfaceAlias Ethernet).DNSServer | Where-Object { $_.AddressFamily -eq 2 }).ServerAddresses
+
     New-NetIPAddress @ipParams -ErrorAction Stop | Out-Null
+    Set-DnsClientServerAddress -InterfaceAlias $Interface -ServerAddresses $CurrentDNSServers -ErrorAction Stop | Out-Null
+    Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
   }
   catch {
     Write-Error "Oh, error occurred:"
@@ -65,11 +70,12 @@ function Reset-QuickIP {
     $Interface
   )
 
-  $IPAddress = (Get-NetIPAddress -InterfaceAlias $Interface -AddressFamily IPv4).IPAddress
-
   try {
+    $IPAddress = (Get-NetIPAddress -InterfaceAlias $Interface -AddressFamily IPv4).IPAddress
+
     Remove-NetIPAddress -IPAddress $IPAddress -Confirm:$false -ErrorAction Stop | Out-Null
     Set-NetIPInterface -InterfaceAlias $Interface -Dhcp Enabled -ErrorAction Stop | Out-Null
+    Set-DnsClientServerAddress -InterfaceAlias $Interface -ResetServerAddresses -ErrorAction Stop | Out-Null
     Restart-NetAdapter -InterfaceAlias $Interface -ErrorAction Stop | Out-Null
   }
   catch {
